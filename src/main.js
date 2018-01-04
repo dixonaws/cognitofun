@@ -22,6 +22,12 @@ const router=new VueRouter({
 const store = new Vuex.Store({
   state: {
     username: '',
+    session: null,
+    idToken: null,
+    refreshToken: null,
+    secretAccessKey: null,
+    accessKeyId: null,
+
   } // state
 
 });
