@@ -1,6 +1,8 @@
 <template>
   <div id="register">
 
+    <p>Use this form to register a new user in the system.</p>
+
     <div class="card-panel">
       <div class="section">
         <h5>New User Registration</h5>
@@ -36,7 +38,7 @@
             <div class="row">
               <div class="input-field col s12">
                 <input v-model="password" id="password" type="password" class="validate">
-                <label for="password">Password</label>
+                <label for="password">Password (at least 6 characters)</label>
               </div>
             </div>
             <div class="row">
@@ -79,6 +81,8 @@
 </template>
 
 <script>
+  import AWS from 'aws-sdk';
+  import {CognitoUserPool, CognitoUserAttribute, CognitoUser, AuthenticationDetails} from 'amazon-cognito-identity-js';
 
   export default {
     name: 'register',
@@ -100,10 +104,48 @@
       },
 
       register() {
-        console.log('Register(): ' + this.last_name + ', ' + this.first_name + ' (' + this.email + ')')
+        console.log('register(): ' + this.last_name + ', ' + this.first_name + ' (' + this.email + ')')
         Materialize.toast('Registering user ' + this.email + ' &nbsp;&nbsp; <i class="fas fa-circle-notch fa-spin"></i>', 2000)
 
-      }
-    }
+        var poolData = {
+          UserPoolId: 'us-east-1_1EoDp5qWJ', // Your user pool id here
+          ClientId: '73r41de3hst5kq2i05rrvam8qv' // Your client id here
+        };
+
+        var userPool = new CognitoUserPool(poolData);
+
+        var attributeList = [];
+
+        var dataEmail = {
+          Name: 'email',
+          Value: this.email
+        };
+
+        var dataPhoneNumber = {
+          Name: 'phone_number',
+          Value: this.phone
+        };
+
+        var attributeEmail = new CognitoUserAttribute(dataEmail);
+        var attributePhoneNumber = new CognitoUserAttribute(dataPhoneNumber);
+
+        attributeList.push(attributeEmail);
+        attributeList.push(attributePhoneNumber);
+
+        console.log('register(): registering user ' + this.username + ', ' + this.phone + ', ' + this.email + '... ');
+        userPool.signUp(this.username, this.password, attributeList, null, function (err, result) {
+          if (err) {
+            console.error(err);
+          } else {
+            var cognitoUser = result.user;
+
+            console.log('register(): user registered as ' + cognitoUser.getUsername());
+          }
+        });
+
+
+      } // register
+
+    } //methods
   }
 </script>

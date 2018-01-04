@@ -7,7 +7,13 @@
 
     <main>
 
-      <router-view></router-view>
+      <transition
+        duration="600"
+        enter-active-class="animated slideInRight"
+        leave-active-class="animated slideOutLeft"
+        mode="out-in">
+        <router-view></router-view>
+      </transition>
 
     </main>
 

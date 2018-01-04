@@ -3,7 +3,7 @@
 
     <nav>
       <div class="nav-wrapper grey lighten-2">
-        <a href="#" class="brand-logo black-text left">cognitofun</a>
+        <a @click="navigate('/')" href="#" class="brand-logo black-text left">cognitofun</a>
         <!--<ul id="nav-desktop" class="right show-on-large hide-on-small-and-down">-->
           <!--<li><a @click="signin()" class="blue darken-3 white-text waves-effect btn btn-small">Sign in</a></li>-->
           <!--<li><a @click="register()" class="blue darken-3 white-text waves-effect btn btn-small">Register</a></li>-->
@@ -12,7 +12,7 @@
 
         <ul id="nav-mobile" class="right">
           <li><a @click="signin()" class="blue-text">Sign in</a></li>
-          <li><a @click="register()" class="blue-text">Register</a></li>
+          <li><a @click="navigate('/register')" class="blue-text">Register</a></li>
         </ul>
 
 
@@ -34,6 +34,11 @@
     },
 
     methods: {
+      navigate(path) {
+        this.$router.push(path);
+
+      },
+
       signin() {
         console.log('signin()');
       },
