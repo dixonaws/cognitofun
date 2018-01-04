@@ -11,15 +11,30 @@ import 'fontawesome';
 import {routes} from "./routes";
 
 Vue.use(VueRouter);
-Vue.use(VueResource)
+Vue.use(VueResource);
+Vue.use(Vuex);
 
 const router=new VueRouter({
   routes: routes,
   mode: 'hash'
 });
 
+const store = new Vuex.Store({
+  state: {
+    username: '',
+  } // state
+
+});
+
 new Vue({
   el: '#app',
   router: router,
-  render: h => h(App)
+  store: store,
+  render: h => h(App),
+
+  methods: {
+    navigate(path) {
+      this.$router.push(path);
+    },
+  }
 })

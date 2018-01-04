@@ -64,8 +64,8 @@
 
       <div id="buttons" class="section">
         <div class="row">
-          <div class="col s2">
-            <button @click="register()" class="btn waves-effect waves-light" type="submit" name="action">Register
+          <div class="col s3">
+            <button @click="register()" class="btn waves-effect waves-light" name="register" id="btn-register">Register
             </button>
           </div>
 
@@ -94,13 +94,32 @@
         confirm_password: null,
         email: null,
         phone: null,
-        username: null
+
+      }
+    },
+
+    computed: {
+      username: {
+        get() {
+          return this.$store.state.username;
+        },
+        set(aUsername) {
+          this.$store.state.username=aUsername;
+        }
       }
     },
 
     methods: {
+      navigate(path) {
+        this.$router.push(path);
+      },
+
       invalidCredentials() {
         // noop
+      },
+
+      confirm() {
+        this.navigate('/confirm');
       },
 
       register() {
@@ -133,13 +152,23 @@
         attributeList.push(attributePhoneNumber);
 
         console.log('register(): registering user ' + this.username + ', ' + this.phone + ', ' + this.email + '... ');
-        userPool.signUp(this.username, this.password, attributeList, null, function (err, result) {
+
+        userPool.signUp(this.username, this.password, attributeList, null, (err, result) => {
           if (err) {
             console.error(err);
           } else {
             var cognitoUser = result.user;
 
-            console.log('register(): user registered as ' + cognitoUser.getUsername());
+            var username=cognitoUser.getUsername();
+            console.log('register(): user registered as ' + username);
+            this.username=username;
+
+            // Remove the dialog box
+            // var toastElement = $('.toast').first()[0];
+            // var toastInstance = toastElement.M_Toast;
+            // toastInstance.remove();
+
+            this.navigate('/confirm');
           }
         });
 

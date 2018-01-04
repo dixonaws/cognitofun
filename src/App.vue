@@ -37,7 +37,13 @@
       }
     },
 
-    methods: {},
+    methods: {
+      navigate(path) {
+        this.$router.push(path);
+      },
+
+
+    },
 
     components: {
       'top-nav': TopNav,
