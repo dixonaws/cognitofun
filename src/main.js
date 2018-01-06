@@ -3,16 +3,20 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'
+import BootstrapVue from 'bootstrap-vue'
 
 import 'aws-sdk';
 import 'amazon-cognito-identity-js';
 import 'jquery';
 import 'fontawesome';
 import {routes} from "./routes";
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import AWS from 'aws-sdk';
 import {CognitoUserPool, CognitoUserAttribute, CognitoUser, AuthenticationDetails} from 'amazon-cognito-identity-js';
 
+Vue.use(BootstrapVue);
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuex);
@@ -185,6 +189,10 @@ const store = new Vuex.Store({
     refreshToken: null,
     secretAccessKey: null,
     accessKeyId: null,
+    poolData: {
+      UserPoolId: 'us-east-1_1EoDp5qWJ', // Your user pool id here
+      ClientId: '73r41de3hst5kq2i05rrvam8qv' // Your client id here
+    }
 
   } // state
 

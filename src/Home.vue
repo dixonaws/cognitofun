@@ -6,50 +6,41 @@
 
     <p>The source for this application can be found at <a href="https://www.github.com/dixonaws/cognitofun">my Github
       cognitofun repo</a>.</p>
+    <br>
 
-    <div class="row">
-      <div class="col s4 m4">
-        <div class="card green lighten-4">
-          <div class="card-content black-text">
-            <span class="card-title">Open API</span>
-            <p>Click to invoke an API that does not require authentication or authoriztion.</p>
-          </div>
-          <div class="card-action center-align">
-            <a href="#" @click="openApi()">Invoke</a>
-          </div>
+    <div class="card-deck">
+      <div class="card border-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header"><h4>Open API</h4></div>
+        <div class="card-body text-dark">
+          <h5 class="card-title">No auth</h5>
+          <p class="card-text">Invoke an API that does not require authentication (authN) or specific authorization
+            (authZ).</p>
+          <a href="#" @click="this.openApi()" class="card-link btn btn-primary">Invoke</a>
         </div>
       </div>
 
-      <div class="col s4 m4">
-        <div class="card blue lighten-1">
-          <div class="card-content black-text">
-            <span class="card-title">AuthN API</span>
-            <p>Click to invoke a protected API. This endpoint requires authentication.</p>
-          </div>
-          <div class="card-action center-align">
-            <a href="#" @click="authnApi()">Invoke</a>
-          </div>
+      <div class="card border-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header"><h4>Authenticated API</h4></div>
+        <div class="card-body text-dark">
+          <h5 class="card-title">Authentication Required</h5>
+          <p class="card-text">This API requires authentication (authN) of any user in the system, but no specific
+            authorization (authZ).</p>
+          <a href="#" @click="this.authnApi()" class="card-link btn btn-primary">Invoke</a>
         </div>
       </div>
 
-      <div class="col s4 m4">
-        <div class="card red lighten-1">
-          <div class="card-content black-text">
-            <span class="card-title">AuthZ API</span>
-            <p>Click to invoke a protected API. This endpoint requires AWS IAM authorization.</p>
-          </div>
-          <div class="card-action center-align">
-            <a href="#" @click="authzApi()">Invoke</a>
-          </div>
+      <div class="card border-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header"><h4>Protected API</h4></div>
+        <div class="card-body text-dark">
+          <h5 class="card-title">authN and authZ</h5>
+          <p class="card-text">You must be logged in as a user with an AccessKey and SecretAccess key that has specific IAM roles attached.
+            (authN and authZ).</p>
+          <a href="#" @click="this.authzApi()" class="card-link btn btn-primary">Invoke</a>
         </div>
       </div>
-
-
-    </div> <!-- row -->
+    </div> <!-- card deck -->
 
   </div> <!-- home -->
-
-
 </template>
 
 <script>

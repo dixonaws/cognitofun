@@ -1,123 +1,118 @@
 <template>
   <div id="topnav">
 
-    <nav>
-      <div class="nav-wrapper grey lighten-2">
-        <a @click="navigate('/')" href="#" class="brand-logo black-text left">cognitofun</a>
+    <b-navbar class="bg-secondary text-white" toggleable="md">
 
-        <div id="nav-mobile" class="right">
-            <a class="blue-text" v-if="this.loggedInUser()" href="#">{{ this.showUserInfo() }}</a>
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-            <a class="modal-trigger blue-text" v-else-if="!this.loggedInUser()" href="#" @click="showModal = true">Sign in or register</a>
+      <b-navbar-brand class="text-white" @click="navigate('/');" href="#">cognitofun</b-navbar-brand>
+
+      <b-collapse is-nav id="nav_collapse">
+
+        <b-navbar-nav>
+          <b-nav-item href="#">Link</b-nav-item>
+          <b-nav-item href="#" disabled>Disabled</b-nav-item>
+        </b-navbar-nav>
+
+        <!-- Right aligned nav items -->
+        <b-navbar-nav class="ml-auto">
+
+          <!--<b-nav-form>-->
+          <!--<b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search"/>-->
+          <!--<b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>-->
+          <!--</b-nav-form>-->
 
 
-        </div>
+          <b-nav-item v-if="!this.loggedInUser()">
+            <a class="text-white" v-b-modal.signinModal>Sign in</a>
+
+          </b-nav-item>
+          <b-nav-item-dropdown right v-else-if="this.loggedInUser()">
+            <!-- Using button-content slot -->
+            <template slot="button-content">
+              <a class="text-white">{{ this.username }}</a>
+            </template>
+            <b-dropdown-item href="#">Show Credentials</b-dropdown-item>
+            <b-dropdown-item href="#">Profile</b-dropdown-item>
+            <b-dropdown-divider/>
+            <b-dropdown-item href="#" @click="signout()">Signout</b-dropdown-item>
+
+
+          </b-nav-item-dropdown>
+
+
+        </b-navbar-nav>
+
+      </b-collapse>
+    </b-navbar>
+
+    <b-modal id="signinModal" size="sm" hide-footer header-bg-variant="light" header-text-variant="dark"
+             title="Sign in to cognitofun!">
+
+      <form>
+        <b-input-group left="<i class='fa fa-user-circle' aria-hidden='true'></i>"
+                       class="mb-sm-3 mr-sm-3 mb-sm-0">
+          <b-input id="username" v-model="username" placeholder="Username"/>
+        </b-input-group>
+
+        <b-input-group left="&nbsp;<i class='fa fa-lock' aria-hidden='true'></i>"
+                       class="mb-2 mr-sm-2 mb-sm-0 password">
+          <b-input id="password" v-model="password" type="password" placeholder="Password"/>
+
+        </b-input-group>
+
+        <b-btn class="btn btn-primary btn-lg mt-lg-5" variant="outline-primary" block @click="signin()">Sign in</b-btn>
+      </form>
+      <br>
+      <div style="text-align: center;">
+        <a href="#">Forgot password?</a>
+
       </div>
-    </nav>
 
-    <div id="modal-signin" class="modal modal-fixed-footer">
-      <div class="modal-content"></div>
-      <div class="modal-footer"></div>
-    </div>
-
-    <!-- modal -->
-        <script type="text/x-template" id="modal-template">
-        <transition name="modal">
-          <div class="modal-mask">
-            <div class="modal-wrapper">
-              <div class="modal-container">
-
-                <div class="modal-header">
-                  <slot name="header">
-                    Sign in
-                  </slot>
-                </div>
-
-                <div class="modal-body">
-                  <slot name="body">
-                    Sign in form
-                  </slot>
-                </div>
-
-               <div class="modal-footer center-align">
-                 <slot name="footer">
-                  <a href="#" @click="signin()">Sign in</a>
-                  <br><br>
-                  Don't have an account? <a href=""">Sign up</a>
-                </slot>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-      </script>
-  <!-- modal -->
-
-
-    <modal v-if="showModal" @close="showModal = false">
-      <h5 slot="header">Sign in to your account</h5>
+      <br>
+      <br>
       <hr>
+      <div style="text-align: center;">
+        Don't have an account? <a href="#"><b>Sign up</b></a>
 
-      <div slot="body">
-        <hr>
-            <div class="row">
-              <form class="col s12">
-                <br>
-                <div class="row">
-                  <div class="input-field col s12">
+      </div>
 
-                    <input v-model="username" id="username" type="text" class="validate" data-length="12">
-                    <label for="username">Username</label>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="input-field col s12">
-                    <input v-model="password" id="password" type="password" class="validate">
-                    <label for="password">Password</label>
-                  </div>
-                </div>
-
-              </form>
-            <hr>
-            </div>
-
-      </div> <!-- sign in form -->
-    </modal>
-
-
+    </b-modal> <!-- signinModal -->
 
   </div> <!-- topnav -->
 </template>
 
 <script>
+  import AWS from 'aws-sdk';
+  import {CognitoUserPool, CognitoUserAttribute, CognitoUser, AuthenticationDetails} from 'amazon-cognito-identity-js';
 
 
   export default {
     name: 'topnav',
     data() {
-      return {
-        showModal: false,
-        // username: null,
-        // password: null
-      }
+      return {}
     },
     computed: {
+      poolData: {
+        get() {
+          return(this.$store.state.poolData)
+        }
+      },
       username: {
         get() {
-          return(this.$store.state.username)
+          return (this.$store.state.username)
         },
         set(aUsername) {
-          this.$store.state.username=aUsername
+          this.$store.state.username = aUsername
         }
       },
       password: {
         get() {
-          return(this.$store.state.password);
+          return (this.$store.state.password);
         },
 
         set(aPassword) {
-          this.$store.state.password=aPassword;
+          this.$store.state.password = aPassword;
         }
       },
       session: {
@@ -161,18 +156,132 @@
         },
 
 
-        }
-      },
+      }
+    },
 
     methods: {
+      signout() {
+        // logout and navigate to the homepage
+        console.log('Logging out (' + this.username + ')...')
+
+        var userPool = new CognitoUserPool(this.poolData);
+
+        var userData = {
+          Username: this.username,
+          Pool: userPool
+        };
+
+        var cognitoUser = new CognitoUser(userData);
+
+        cognitoUser.signOut();
+
+        // destroy the global cognitoUser one it has been signed out of Cognito
+        this.idToken = '';
+        this.refreshToken = '';
+        this.sessionToken = '';
+        this.accessKeyId = '';
+        this.secretAccessKey = '';
+
+        this.navigate('/');
+      },
       navigate(path) {
         this.$router.push(path);
 
       }, // navigate
 
+      signin() {
+        var authenticationData = {
+          Username: this.username,
+          Password: this.password
+        };
+
+        // var poolData = {
+        //   UserPoolId: 'us-east-1_1EoDp5qWJ', // Your user pool id here
+        //   ClientId: '73r41de3hst5kq2i05rrvam8qv' // Your client id here
+        // };
+
+        var authenticationDetails = new AuthenticationDetails(authenticationData);
+
+        var userPool = new CognitoUserPool(this.poolData);
+
+        console.log(this.username);
+
+        var userData = {
+          Username: this.username,
+          Pool: userPool
+        };
+
+        var cognitoUser = new CognitoUser(userData);
+
+        cognitoUser.authenticateUser(authenticationDetails, {
+          onSuccess: (result) => {
+            var cognitoUserSession = result;
+
+            console.log("Loading Auth User...");
+            console.log('cognitoUserSession: ' + cognitoUserSession)
+
+            if (cognitoUser != null) {
+              cognitoUser.getSession((err, session) => {
+                if (err) {
+                  alert(err);
+                  return;
+                }
+
+                // hide the signin modal
+                this.$root.$emit('bv::hide::modal', 'signinModal')
+
+                // store the session locally in the Vuex store via computed properties
+                this.session = session;
+                this.idToken = session.getIdToken().getJwtToken();
+                this.refreshToken = session.getRefreshToken().token;
+
+                console.log('session email: ' + session.idToken.payload.email);
+
+                var creds = new AWS.CognitoIdentityCredentials({
+                  IdentityPoolId: 'us-east-1:3605014d-6a56-436e-95d1-fbc4c35b305f', // your identity pool id here
+                  Logins: {
+                    // Change the key below according to the specific region your user pool is in.
+                    'cognito-idp.us-east-1.amazonaws.com/us-east-1_1EoDp5qWJ': session.getIdToken().getJwtToken()
+                  }
+                }, {
+                  region: "us-east-1"
+                });
+
+                creds.refresh((err, data) => {
+                  if (err) console.log(err)
+                  else {
+                    // store the tokens locally in the authService
+                    this.sessionToken = creds.sessionToken;
+                    this.accessKeyId = creds.accessKeyId;
+                    this.secretAccessKey = creds.secretAccessKey;
+
+                    // AWS.config.credentials
+                    // var s3 = new AWS.S3();
+
+                    console.log('accessKeyId: ' + this.accessKeyId);
+                    console.log('secretAccessKey: ' + this.secretAccessKey)
+
+                  }
+                }); // creds.refresh
+
+              }); //cognitoUser.getSession
+
+
+            }
+
+          },
+
+          onFailure: function (err) {
+            console.error(err);
+          }
+        });
+
+
+      }, // signin
+
       loggedInUser() {
         if (this.username && this.accessKeyId && this.secretAccessKey) {
-          return(true);
+          return (true);
         }
         else {
           return (false);
@@ -180,8 +289,8 @@
       }, // loggedInUser
 
       showUserInfo() {
-        if(this.loggedInUser()) {
-          return(this.username);
+        if (this.loggedInUser()) {
+          return (this.username);
           console.log(this.loggedInUser());
           console.log('AccessKeyId: ' + this.accessKeyId + ', secretAccessKey: ' + this.secretAccessKey);
         }
