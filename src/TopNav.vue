@@ -176,11 +176,14 @@
         cognitoUser.signOut();
 
         // destroy the global cognitoUser one it has been signed out of Cognito
-        this.idToken = '';
-        this.refreshToken = '';
-        this.sessionToken = '';
-        this.accessKeyId = '';
-        this.secretAccessKey = '';
+        this.idToken = null;
+        this.refreshToken = null;
+        this.sessionToken = null;
+        this.accessKeyId = null;
+        this.secretAccessKey = null;
+        this.session=null;
+        this.username=null;
+        this.password=null;
 
         this.navigate('/');
       },
@@ -194,11 +197,6 @@
           Username: this.username,
           Password: this.password
         };
-
-        // var poolData = {
-        //   UserPoolId: 'us-east-1_1EoDp5qWJ', // Your user pool id here
-        //   ClientId: '73r41de3hst5kq2i05rrvam8qv' // Your client id here
-        // };
 
         var authenticationDetails = new AuthenticationDetails(authenticationData);
 
