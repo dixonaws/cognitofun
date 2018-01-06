@@ -49,6 +49,7 @@
 
   </div> <!-- home -->
 
+
 </template>
 
 <script>
@@ -57,7 +58,7 @@
     name: 'Home',
     data() {
       return {
-        message: null,
+        showModal: false,
 
       }
     },
@@ -78,3 +79,4 @@
 
   }
 </script>
+
