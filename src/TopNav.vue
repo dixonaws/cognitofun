@@ -4,19 +4,14 @@
     <nav>
       <div class="nav-wrapper grey lighten-2">
         <a @click="navigate('/')" href="#" class="brand-logo black-text left">cognitofun</a>
-        <!--<ul id="nav-desktop" class="right show-on-large hide-on-small-and-down">-->
-        <!--<li><a @click="signin()" class="blue darken-3 white-text waves-effect btn btn-small">Sign in</a></li>-->
-        <!--<li><a @click="register()" class="blue darken-3 white-text waves-effect btn btn-small">Register</a></li>-->
 
-        <!--</ul>-->
+        <div id="nav-mobile" class="right">
+            <a class="blue-text" v-if="this.loggedInUser()" href="#">{{ this.showUserInfo() }}</a>
 
-        <ul id="nav-mobile" class="right">
-          <li><a class="modal-trigger blue-text" href="#" @click="showModal = true">Sign in</a></li>
-          <!--<li><a @click="navigate('/signin')" class="blue-text">Sign in</a></li>-->
-          <li><a @click="navigate('/register')" class="blue-text">Register</a></li>
-        </ul>
+            <a class="modal-trigger blue-text" v-else-if="!this.loggedInUser()" href="#" @click="showModal = true">Sign in or register</a>
 
 
+        </div>
       </div>
     </nav>
 
@@ -163,16 +158,42 @@
         },
         set(aSecretAccessKey) {
           this.$store.state.secretAccessKey = aSecretAccessKey;
-        }
-      }
-    },
+        },
 
+
+        }
+      },
 
     methods: {
       navigate(path) {
         this.$router.push(path);
 
-      },
+      }, // navigate
+
+      loggedInUser() {
+        if (this.username && this.accessKeyId && this.secretAccessKey) {
+          return(true);
+        }
+        else {
+          return (false);
+        }
+      }, // loggedInUser
+
+      showUserInfo() {
+        if(this.loggedInUser()) {
+          return(this.username);
+          console.log(this.loggedInUser());
+          console.log('AccessKeyId: ' + this.accessKeyId + ', secretAccessKey: ' + this.secretAccessKey);
+        }
+        else {
+          console.log('No user logged in');
+        }
+      }, // showUserInfo
+
+      showProfile() {
+        alert('show profile');
+      }
+
     }
 
   }
