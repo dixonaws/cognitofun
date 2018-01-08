@@ -40,7 +40,7 @@
 
     </table>
     <br>
-    
+
 
     <div class="card-deck">
       <div class="card border-dark mb-3" style="max-width: 18rem;">
